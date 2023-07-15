@@ -42,7 +42,14 @@ function AppendForm(){
 
     return(
         <FormControl sx={formStyle} >
-            <InputLabel id="store">Store</InputLabel>
+            <Autocomplete
+                    disablePortal
+                    id="select-box"
+                    options={storeName}
+                    sx={storeDropdownStyle}
+                    renderInput={(params) => <TextField {...params} label="Store Name" />}
+            />
+            {/* <InputLabel id="store">Store</InputLabel>
             <Select
                 labelId="store"
                 id="store-name"
@@ -59,7 +66,7 @@ function AppendForm(){
                         <MenuItem key={store.index} value={store.value}>{store.value}</MenuItem>
                     ))
                 }
-            </Select>
+            </Select> */}
             <ProductCards/>
         </FormControl>
     )

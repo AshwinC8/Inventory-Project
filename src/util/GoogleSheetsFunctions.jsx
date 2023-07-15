@@ -1,8 +1,8 @@
 const spreadsheetID = "1Hdo1_4q5Id9-qafaM4AY8fyN_cxC4PxIlZ9GMFMxPaM"
 const ZERO = 0
-const IDIndex = 1 
-const ProductNameIndex = 2 
-const QuantityIndex = 3
+const IDIndex = 0 
+const ProductNameIndex = 1 
+const QuantityIndex = 2
 
 export const getStores = async (session) => {
 

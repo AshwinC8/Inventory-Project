@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react"
-import { Card, InputLabel, Select, MenuItem, FormControl, TextField, useFormControl, Container, Button } from "@mui/material"
+import { Card, InputLabel, Select, MenuItem, FormControl, TextField, useFormControl, Container, Button, Autocomplete } from "@mui/material"
 import { getProductIDs, getProductInfo } from "../../util/GoogleSheetsFunctions";
 import { useSession } from "@supabase/auth-helpers-react";
 import { DataContext } from "../../context/DataProvider";
@@ -144,7 +144,7 @@ function ProductCard({ card, index }){
         <Card sx={productCardStyle}>
             <FormControl id={"form " + card.id} sx={productFormStyle}>
                 <FormControl>
-                    <InputLabel id="productID">Product ID</InputLabel>
+                    <InputLabel id="productID">Last 4 digits of Barcode</InputLabel>
                     <Select
                         labelId="productID"
                         id="productID-select"
