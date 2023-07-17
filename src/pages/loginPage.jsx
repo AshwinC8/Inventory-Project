@@ -1,11 +1,7 @@
-// import { Auth } from '@supabase/auth-ui-react'
-// import { ThemeSupa } from '@supabase/auth-ui-shared'
-// import { createClient } from '@supabase/supabase-js'
-
-import React, { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import GoogleLoginButton from '../components/login/googleButton'
-import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react'
+import { useSession } from '@supabase/auth-helpers-react'
 import Logo from '../assets/pure-naturals-essentials.svg'
 
 
@@ -25,20 +21,17 @@ const logoStyle = {
 
 
 function Login() {
-    const supabase = useSupabaseClient()
     const session = useSession()
     const navigate = useNavigate()
     
     useEffect(()=>{
       if(session){
         if(session.hasOwnProperty("provider_token")){
-          navigate("/success")
-          // return (<Alert severity="error">Session timed out</Alert>)
+          navigate("/Dashboard")
         }
       }
     },[session])
 
-    console.log(session)
 
     return (
       <>

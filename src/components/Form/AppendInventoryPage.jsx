@@ -9,7 +9,8 @@ import SubmitButton from './SubmitButton';
 const containerStyle = {
     display: "flex",
     flexDirection: "column",
-    alignItems: "center"
+    alignItems: "center",
+    // backgroundColor: "white"
 }
 
 function AppendInventoryPage(){
@@ -38,9 +39,7 @@ function AppendInventoryPage(){
 
     return(
         <Container maxWidth="sm">
-            <h2>
-                Update Store
-            </h2>
+            <h2>Update Store</h2>
             <Grid style={containerStyle}>
                 <AppendForm />       
                 <SubmitButton/>

@@ -1,4 +1,4 @@
-import { FormControl,InputLabel, Select, MenuItem, TextField, Autocomplete } from "@mui/material"
+import { FormControl, TextField, Autocomplete } from "@mui/material"
 import { useContext, useEffect, useState } from 'react';
 import { DataContext } from '../../context/DataProvider';
 import { useSession } from '@supabase/auth-helpers-react'
@@ -16,7 +16,7 @@ const storeDropdownStyle = {
 
 
 function AppendForm(){
-    const { storeNames, setStoreNames, productCards, setProductCards, setForm} = useContext(DataContext)
+    const { storeNames, setStoreNames, setForm} = useContext(DataContext)
     const session = useSession()
     const [ storeName, setStoreName] = useState("")
 
@@ -31,12 +31,12 @@ function AppendForm(){
     },[])
     
     
-    const handleStoreChange = (event) => {
-        setStoreName(event.target.value)
+    const handleStoreChange = (event, newStoreName) => {
+        setStoreName(newStoreName)
         setForm(
             prevState => ({ 
                 ...prevState,
-                storeName : event.target.value,
+                storeName : newStoreName,
         }))
     }
 
@@ -44,29 +44,13 @@ function AppendForm(){
         <FormControl sx={formStyle} >
             <Autocomplete
                     disablePortal
-                    id="select-box"
-                    options={storeName}
+                    id="select-store"
                     sx={storeDropdownStyle}
+                    inputValue={storeName}
+                    onInputChange={handleStoreChange}
+                    options={storeNames}
                     renderInput={(params) => <TextField {...params} label="Store Name" />}
             />
-            {/* <InputLabel id="store">Store</InputLabel>
-            <Select
-                labelId="store"
-                id="store-name"
-                value={storeName}
-                label="Store"
-                sx={storeDropdownStyle}
-                onChange={handleStoreChange}
-            >
-                <MenuItem value="">
-                    <em>None</em>
-                </MenuItem>
-                {   
-                    storeNames.map( (store) => (
-                        <MenuItem key={store.index} value={store.value}>{store.value}</MenuItem>
-                    ))
-                }
-            </Select> */}
             <ProductCards/>
         </FormControl>
     )

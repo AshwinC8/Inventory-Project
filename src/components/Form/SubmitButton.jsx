@@ -1,9 +1,8 @@
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import { DataContext } from "../../context/DataProvider"
-import { appendInventory } from "../../util/GoogleSheetsFunctions"
-import { useNavigate } from "react-router-dom"
+import { appendInventory, getProductInfo } from "../../util/GoogleSheetsFunctions"
 import { useSession } from "@supabase/auth-helpers-react"
-import { Alert } from "@mui/material"
+import { Dialog, DialogTitle } from "@mui/material"
 
 const submitButtonStyle = {
     width: "50%",
@@ -13,16 +12,38 @@ const submitButtonStyle = {
     marginBottom: 20,
 }
 
+const dialogStyle= {
+    paddingLeft: 25,
+    paddingRight: 25,
+    width: "auto",
+    height: "auto",
+}
+
 function SubmitButton(){
     const session = useSession()
-    const navigate = useNavigate()
-    const { productIDs, form, setForm} = useContext(DataContext)
+    const {form, productCards} = useContext(DataContext)
+    const [open, setOpen] = useState(false)
+    const [response, setResponse] = useState(false)
+    
+    const handleCheckoutOpen = () => {
+        setOpen(true)
+    }
+    
+    const handleCheckoutClose = () => {
+        // console.log(response)
+        // setTimeout(()=>{setOpen(false); window.location.reload(false);},1000)
+        
+        setOpen(false); 
+
+        // Reloading page may be better as cache gets cleared each time 
+        // on the other hand if we reset product card states the transition may be smoother 
+        window.location.reload(false);
+    }
 
     function checkQuantities(){
         let check = false
 
         form.quantities.forEach( element => {
-            console.log(element)
             if(element !== ""){
                 check = true
             }
@@ -30,24 +51,50 @@ function SubmitButton(){
         return check
     }
 
-    const submitForm = () => {
+    const submitForm = async () => {
         const check = checkQuantities()
-        console.log(check)
         if( form.storeName!=="" && check){
-            console.log("form = \n" + JSON.stringify(form))
+
             const date = new Date().toLocaleString()
-            appendInventory(session, date, form.storeName, form.quantities)
-            window.location.reload(false)
+
+            //think about implementation as i have no clue why i need this here
+            async function getResponse(){
+                return await appendInventory(session, date, form.storeName, form.quantities)
+            }
+            const value = getResponse()
+            await setResponse(value)
+
+            handleCheckoutOpen()
         }
         else{
-            console.log("form = \n" + JSON.stringify(form))
+            // console.log("form = \n" + JSON.stringify(form))
         }
     }
 
     return(
-        <button style={submitButtonStyle} onClick={submitForm}>
-            Submit
-        </button>
+        <>
+            <button style={submitButtonStyle} onClick={submitForm}>
+                Submit
+            </button>
+            <Dialog  onClose={handleCheckoutClose} open={open}>
+                <DialogTitle style={{paddingBottom:0}}><b>CheckOut</b></DialogTitle>
+                <div style={dialogStyle}>
+                    {  response?
+                        <p><b>Status</b> : Successful Updation</p>
+                        :
+                        <p><b>Status</b> : Updation Failed</p>
+                    }
+                    <>
+                        <p><b>Items Updated </b>:</p>
+                        {
+                            productCards.map((card, index) => (
+                                <p key={card.id}><b>{index+1}</b> : {card.productID} -&gt; {card.productName} -&gt; {card.quantity}</p>
+                            ))
+                        }
+                    </>
+                </div>
+            </Dialog>
+        </>
 
     )
 }

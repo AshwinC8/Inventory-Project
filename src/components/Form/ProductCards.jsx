@@ -1,9 +1,7 @@
-import { Button } from "@mui/material"
-import { v4 as uuid } from 'uuid'
-import ProductCard from "./ProductCard"
 import { useContext, useEffect } from "react"
+import { v4 as uuid } from 'uuid'
 import { DataContext } from "../../context/DataProvider"
-import AddBoxIcon from '@mui/icons-material/AddBox'
+import ProductCard from "./ProductCard"
 
 const productsStyle = {
     display: "flex",
@@ -12,7 +10,6 @@ const productsStyle = {
 }
 
 const addButtonStyle = {
-    // maxWidth : "200px",
     marginTop: 15
 }
 
@@ -20,14 +17,13 @@ function ProductCards(){
     const { productCards, setProductCards} = useContext(DataContext)
     
     useEffect( () => {
-        setProductCards([{ id : uuid(), productID: "", quantity: ""}])
+        setProductCards([{ id : uuid(), productID: "", productName: "", quantity: ""}])
     },[])
 
     const addProductCard = () => {
         let updatedCards = productCards.filter(() => true)
-        updatedCards.push({ id : uuid(), productID: "", quantity: ""})
+        updatedCards.push({ id : uuid(), productID: "", productName: "", quantity: ""})
         setProductCards(updatedCards)
-        console.log(updatedCards)
     }
     
     return(
@@ -37,7 +33,6 @@ function ProductCards(){
                     <ProductCard key={product.id} card={product} index={index+1}/>
                 ))
             }
-            {/* style={{ width: "60%",}} sx={{ p: 1.5, px:2 }} variant="outlined" */}
             <button style={addButtonStyle} onClick={addProductCard}>
                 Add Product
             </button> 

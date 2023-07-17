@@ -15,31 +15,22 @@ export const getStores = async (session) => {
     })
 
     const data = await request.json()
-    console.log(data)
-    // console.log(data.sheets[0].data[0].rowData)
-    // console.log(data.sheets[0].data[0].rowData[0].values[0].effectiveValue.stringValue)
-    // console.log(data.sheets[0].data[0].rowData.length)
     
     const storeList = data.sheets[ZERO].data[ZERO].rowData
     const length = data.sheets[ZERO].data[ZERO].rowData.length
-    let storeNames = []
+    let storeNames = [""]
     for( let i=1 ; i<length ; i++){
-        const store = storeList[i].values[ZERO].effectiveValue.stringValue
-        storeNames.push({ index : i-1, value : store})
-        // console.log(storeList[i].values[0].effectiveValue.stringValue)
+        const store = storeList[i].values[ZERO].effectiveValue.stringValue+""
+        storeNames.push(store)
+        // storeNames.push({ label : store, index : i-1})
     }
-    // console.log(storeNames)
+    
     return storeNames
-    // }).then((data) => {
-    //     return data.JSON
-    // }).then((data) => {
-    //     console.log(data)
-    // })
 }
 
 
 export async function getProductIDs(session){
-    const request = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetID}?includeGridData=true&ranges=Products!B:B`,{
+    const request = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetID}?includeGridData=true&ranges=Products!A:A`,{
         method: "GET",
         headers: {
             'Accept': 'application/json',
@@ -48,16 +39,16 @@ export async function getProductIDs(session){
     })
 
     const data = await request.json()
-    
+
     const productList = data.sheets[ZERO].data[ZERO].rowData
     const length = data.sheets[ZERO].data[ZERO].rowData.length
     let productIDs = []
-    for( let i=1 ; i<length ; i++){
-        let productID = productList[i].values[ZERO].effectiveValue.stringValue
-        productIDs.push({ index : i-1, value : productID})
+    for( let i=1 ; i<length && productList[i].values[IDIndex].formattedValue ; i++){
+        let productID = productList[i].values[ZERO].formattedValue + ""
+        let formattedPID = productID.slice(-4)
+        productIDs.push({ index : i-1, value : productID, formattedValue : formattedPID})
     }
 
-    // console.log(productIDs)
     return productIDs
 }
 
@@ -71,20 +62,17 @@ export async function getProductInfo(session, productID){
     })
 
     const data = await request.json()
-    // console.log("info = " + JSON.stringify(data))
+
     const productInfoList = data.sheets[ZERO].data[ZERO].rowData
     const length = data.sheets[ZERO].data[ZERO].rowData.length
- 
     const  productInfo = {
         productID: "",
         productName: "",
         quantity: ""
     }
 
-    // console.log(productInfoList)
-
     for( let i=1 ; i<length ; i++){
-        const pID = productInfoList[i].values[IDIndex].effectiveValue.stringValue
+        const pID = productInfoList[i].values[IDIndex].formattedValue
         if( pID === productID ){
             const productName = productInfoList[i].values[ProductNameIndex].effectiveValue.stringValue
             const quantity = productInfoList[i].values[QuantityIndex].effectiveValue.numberValue
@@ -93,7 +81,6 @@ export async function getProductInfo(session, productID){
             productInfo.productName = productName
             productInfo.quantity = quantity
 
-            console.log(productInfo)
             return productInfo
         }
     }
@@ -104,19 +91,17 @@ export async function getProductInfo(session, productID){
 export async function appendInventory(session, dateTime, storeName, productUpdates){
     const appendInfo = [ dateTime, storeName ]
 
-    console.log(productUpdates)
     productUpdates.forEach(element => {
-        console.log(element)
         appendInfo.push(element)        
-    });
+    })
 
     const body = {
         "range": "Inventory",
         "majorDimension": "ROWS",
         "values": [appendInfo]
-      }
+    }
 
-    const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetID}/values/Inventory:append?insertDataOption=INSERT_ROWS&responseDateTimeRenderOption=FORMATTED_STRING&valueInputOption=USER_ENTERED`,{
+    const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetID}/values/Inventory:append?includeValuesInResponse=true&valueInputOption=USER_ENTERED`,{
         method: "POST",
         headers: {
             'Content-Type': 'application/json',
@@ -126,13 +111,11 @@ export async function appendInventory(session, dateTime, storeName, productUpdat
         body: JSON.stringify(body)
     })
 
-    console.log(response)
-    return response
-}
+    //Check later
+    const responseData = await response.json()
+    if(responseData.updates.updatedRows >= 1){
+        return true
+    }
 
-// Example Calls
-// const date = new Date().toLocaleString()
-// getStores(session)
-// getProductIDs(session)
-// getProductInfo(session, "8906150680001")
-// appendInventory(session, date, "Store 1", [ 1, 2 ,3, 4, 5, 6, 7])
+    return false
+}

@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react"
-import { Card, InputLabel, Select, MenuItem, FormControl, TextField, useFormControl, Container, Button, Autocomplete } from "@mui/material"
-import { getProductIDs, getProductInfo } from "../../util/GoogleSheetsFunctions";
+import { Card, InputLabel, Select, MenuItem, FormControl, TextField, Button, Autocomplete, Box } from "@mui/material"
 import { useSession } from "@supabase/auth-helpers-react";
 import { DataContext } from "../../context/DataProvider";
+import { getProductInfo } from "../../util/GoogleSheetsFunctions";
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline'
 
 const productCardStyle = {
@@ -48,20 +48,37 @@ function ProductCard({ card, index }){
     const [ productID, setProductID] = useState("");
     const [ quantity, setQuantity] = useState(0)
     const [ productInfo, setProductInfo] = useState(null)
+    const [ productIDLabel, setProductIDLabel] = useState("")
+    const [ productIDValue, setProductIDValue] = useState("")
     const session = useSession()
 
     useEffect(() => {
-      setProductID(card.productID)
-      setQuantity(card.quantity)
+        setProductID(card.productID)
+        setQuantity(card.quantity)
     }, [])
+
+    //updates the card product name onto the card details(i.e productCards state)
+    useEffect(() => {
+        if(productInfo) {
+            let index = productCards.findIndex( x => x.id === card.id )
+            if( index !== -1 ){
+                let tempCards = productCards.slice()
+                tempCards[index].productName = productInfo.productName
+                setProductCards(tempCards)
+            } 
+        }
+    },[productInfo])
+    
     
     function removeCard(){
         const updatedCards = productCards.filter(element => element.id !== card.id)
-        console.log(updatedCards)
         setProductCards(updatedCards)
     }
 
     const handleProductSelect = (event) => {
+        const newValue = { value : event.target.value }
+
+        setProductIDValue(newValue)
         // let newPIDs = remainingPIDs
         // if(productID !== ""){
         //     productIDs.forEach( (product) => {if (product.value === productID){newPIDs.push(product)}})
@@ -74,23 +91,21 @@ function ProductCard({ card, index }){
         let index = productCards.findIndex( x => x.id === card.id )
         if( index !== -1 ){
             let tempCards = productCards.slice()
-            tempCards[index][productID] = event.target.value 
+            tempCards[index].productID = newValue.value
             setProductCards(tempCards)
         } 
 
-
-        setProductID(event.target.value)
+        setProductID(newValue.value)
+        
         //whyyy async
         async function updateProductInfo(){
-            const value = await getProductInfo(session, event.target.value)
-            console.log("info = " + JSON.stringify(value))
+            const value = await getProductInfo(session, newValue.value)
             setProductInfo(value)
         }
         updateProductInfo()
 
         //updating form
         productIDs.forEach( (product) => {
-            // console.log(JSON.stringify(product) + "\n" + productID )
             if(product.value === productID){
                 let q = form.quantities
                 q[product.index] = 0
@@ -101,7 +116,7 @@ function ProductCard({ card, index }){
                 }))
             }
 
-            if(product.value === event.target.value){
+            if(product.value === newValue.value){
                 let q = form.quantities
                 q[product.index] = quantity
     
@@ -111,7 +126,6 @@ function ProductCard({ card, index }){
                 }))
             }
         })
-        console.log(form)
     }
 
 
@@ -119,14 +133,14 @@ function ProductCard({ card, index }){
         let index = productCards.findIndex( x => x.id === card.id )
         if( index !== -1 ){
             let tempCards = productCards.slice()
-            tempCards[index][quantity] = event.target.value 
+            tempCards[index].quantity = event.target.value 
             setProductCards(tempCards)
         } 
 
         setQuantity(event.target.value)
+
         //updating form
         productIDs.forEach( (product) => {
-            // console.log(JSON.stringify(product) + "\n" + productID )
             if(product.value === productID){
                 let q = form.quantities
                 q[product.index] = event.target.value
@@ -135,7 +149,6 @@ function ProductCard({ card, index }){
                         ...prevState,
                         quantities: q
                 }))
-                console.log(form)
             }
         })
     }
@@ -143,6 +156,26 @@ function ProductCard({ card, index }){
     return(
         <Card sx={productCardStyle}>
             <FormControl id={"form " + card.id} sx={productFormStyle}>
+                {/* <FormControl>
+                    <Autocomplete
+                        id="select-product"
+                        sx={productSelectStyle}
+                        // defaultValue={""}
+                        value={productIDValue}
+                        onChange={handleProductSelect}
+                        inputValue={productIDLabel}
+                        onInputChange={(event, newInputValue)=>{setProductIDLabel(newInputValue)}}
+                        options={productIDs}
+                        // isOptionEqualToValue={(option, value) => option === value}
+                        getOptionSelected={(option) => option.formattedValue}
+                        renderOption={(props, option) => (
+                            <Box component='li' {...props}>
+                                {option.formattedValue} 
+                            </Box>
+                        )}
+                        renderInput={(params) => <TextField {...params} label="Last 4 digits of Barcode"/>}
+                    />
+                </FormControl> */}
                 <FormControl>
                     <InputLabel id="productID">Last 4 digits of Barcode</InputLabel>
                     <Select
@@ -150,7 +183,7 @@ function ProductCard({ card, index }){
                         id="productID-select"
                         defaultValue=""
                         value={productID}
-                        label="Product ID"
+                        label="Last 4 digits of Barcode"
                         sx={productSelectStyle}
                         onChange={handleProductSelect}
                     >
@@ -159,7 +192,7 @@ function ProductCard({ card, index }){
                         </MenuItem>
                         {   
                             productIDs.map( (productID) => (
-                                <MenuItem key={productID.index} value={productID.value}>{productID.value.slice(-4)}</MenuItem>
+                                <MenuItem key={productID.index} value={productID.value}>{productID.formattedValue}</MenuItem>
                             ))
                         }
                     </Select>
@@ -167,9 +200,9 @@ function ProductCard({ card, index }){
                 {
                     productInfo &&
                     <>
-                        <p>ID : { productInfo.productID}</p>
-                        <p>Product : { productInfo.productName}</p>
-                        <p>Quantity : { productInfo.quantity}</p>
+                        <p><b>ID</b> : { productInfo.productID}</p>
+                        <p><b>Product</b> : { productInfo.productName}</p>
+                        <p><b>Quantity</b> : { productInfo.quantity}</p>
                     </>
                 }
                 {
