@@ -61,8 +61,7 @@ function SubmitButton(){
             async function getResponse(){
                 return await appendInventory(session, date, form.storeName, form.quantities)
             }
-            const value = getResponse()
-            await setResponse(value)
+            const value = getResponse().then((data) => {setResponse(data)})
 
             handleCheckoutOpen()
         }
@@ -79,19 +78,19 @@ function SubmitButton(){
             <Dialog  onClose={handleCheckoutClose} open={open}>
                 <DialogTitle style={{paddingBottom:0}}><b>CheckOut</b></DialogTitle>
                 <div style={dialogStyle}>
-                    {  response?
-                        <p><b>Status</b> : Successful Updation</p>
+                    {  response === true?
+                        <>
+                            <p><b>Status</b> : Successful Updation</p>
+                            <p><b>Items Updated </b>:</p>
+                            {
+                                productCards.map((card, index) => (
+                                    <p key={card.id}><b>{index+1}</b> : {card.productID} -&gt; {card.productName} -&gt; {card.quantity}</p>
+                                ))
+                            }
+                        </>
                         :
                         <p><b>Status</b> : Updation Failed</p>
                     }
-                    <>
-                        <p><b>Items Updated </b>:</p>
-                        {
-                            productCards.map((card, index) => (
-                                <p key={card.id}><b>{index+1}</b> : {card.productID} -&gt; {card.productName} -&gt; {card.quantity}</p>
-                            ))
-                        }
-                    </>
                 </div>
             </Dialog>
         </>
