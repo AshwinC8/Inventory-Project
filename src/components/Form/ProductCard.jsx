@@ -200,14 +200,15 @@ function ProductCard({ card, index }){
                 {
                     productInfo &&
                     <>
-                        <p><b>ID</b> : { productInfo.productID}</p>
+                        <p>{ productInfo.productID } -&gt; { productInfo.productName }</p>
+                        {/* <p><b>ID</b> : { productInfo.productID}</p>
                         <p><b>Product</b> : { productInfo.productName}</p>
-                        <p><b>Quantity</b> : { productInfo.quantity}</p>
+                        <p><b>Quantity</b> : { productInfo.quantity}</p> */}
                     </>
                 }
                 {
                     productID &&
-                        <TextField id="outlined-number" label="Quantity" type="number"
+                        <TextField id="outlined-number" label="Quantity Replenished" type="number"
                             InputLabelProps={{
                             shrink: true,
                             }}

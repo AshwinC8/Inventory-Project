@@ -21,18 +21,17 @@ const dialogStyle= {
 
 function SubmitButton(){
     const session = useSession()
-    const {form, productCards} = useContext(DataContext)
+    const {form, productCards, setProductCards} = useContext(DataContext)
     const [open, setOpen] = useState(false)
     const [response, setResponse] = useState(false)
     
     const handleCheckoutOpen = () => {
+        const newProductCards = productCards.filter((card) => card.quantity!=="" || card.quantity===null || card.quantity===0)
+        setProductCards(newProductCards)
         setOpen(true)
     }
     
     const handleCheckoutClose = () => {
-        // console.log(response)
-        // setTimeout(()=>{setOpen(false); window.location.reload(false);},1000)
-        
         setOpen(false); 
 
         // Reloading page may be better as cache gets cleared each time 
@@ -44,7 +43,7 @@ function SubmitButton(){
         let check = false
 
         form.quantities.forEach( element => {
-            if(element !== ""){
+            if(element !== "" || element!==null || element!==0){
                 check = true
             }
         })
@@ -57,7 +56,7 @@ function SubmitButton(){
 
             const date = new Date().toLocaleString()
 
-            //think about implementation as i have no clue why i need this here
+            //Promise well implemented
             async function getResponse(){
                 return await appendInventory(session, date, form.storeName, form.quantities)
             }
@@ -75,21 +74,24 @@ function SubmitButton(){
             <button style={submitButtonStyle} onClick={submitForm}>
                 Submit
             </button>
+            
+            {/*Checkout box can organised if we define it as another component*/}
             <Dialog  onClose={handleCheckoutClose} open={open}>
                 <DialogTitle style={{paddingBottom:0}}><b>CheckOut</b></DialogTitle>
                 <div style={dialogStyle}>
                     {  response === true?
                         <>
                             <p><b>Status</b> : Successful Updation</p>
-                            <p><b>Items Updated </b>:</p>
+                            <p><b>Store</b> : {form.storeName}</p>
+                            <p><b>Items Replenished</b>:</p>
                             {
                                 productCards.map((card, index) => (
-                                    <p key={card.id}><b>{index+1}</b> : {card.productID} -&gt; {card.productName} -&gt; {card.quantity}</p>
+                                    <p key={card.id}><b>{index+1}</b> : {card.productID} -&gt; {card.productName} -&gt; {card.quantity}</p>     
                                 ))
                             }
                         </>
                         :
-                        <p><b>Status</b> : Updation Failed</p>
+                        <p><b>Status</b> : Updation <b>Loading</b> OR <b>Failed</b></p>
                     }
                 </div>
             </Dialog>
