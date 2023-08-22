@@ -1,0 +1,45 @@
+.productCardStyle {
+    width: "97%", 
+    py: 3,
+    my: 2, 
+    mr: 1.5, 
+    backgroundColor: "#E5E4E2",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+}
+
+const productFormStyle = {
+    width: "100%",
+    px: 3
+}
+
+const productSelectStyle = {
+    width:"100%",
+}
+
+const quantityInputStyle = {
+    width: "100%"
+}
+
+const deleteButtonStyle {
+    maxheight: "200px",
+    mx: 2,
+    color: "red"
+}
+
+cont cardFeatureStyle = {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+}
+
+.cardFeatureStyle {
+    display: "flex";
+    flex-direction: "column";
+    justify-content: "center";
+    align-items: "center";
+}
+

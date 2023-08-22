@@ -2,7 +2,8 @@ import { useContext, useState } from "react"
 import { DataContext } from "../../context/DataProvider"
 import { appendInventory, getProductInfo } from "../../util/GoogleSheetsFunctions"
 import { useSession } from "@supabase/auth-helpers-react"
-import { Dialog, DialogTitle } from "@mui/material"
+import { Button, Dialog, DialogTitle } from "@mui/material"
+import CloseIcon from '@mui/icons-material/Close';
 
 const submitButtonStyle = {
     width: "50%",
@@ -19,12 +20,34 @@ const dialogStyle= {
     height: "auto",
 }
 
+// function AlertBox(props){
+//     const {onClose, open, message} = props
+//     return(
+//         <Dialog
+//             open={open}
+//             onClose={onClose}
+//         >   <h1>meow</h1>
+//             <Alert>{message}</Alert>
+//         </Dialog>
+//     )
+// }
+
 function SubmitButton(){
     const session = useSession()
     const {form, productCards, setProductCards} = useContext(DataContext)
     const [open, setOpen] = useState(false)
     const [response, setResponse] = useState(false)
-    
+    const [ alertOpen, setAlertOpen] = useState(false)
+    let alertMessage = ""
+
+    const handleAlertOpen = () => {
+        setAlertOpen(true);
+    }
+
+    const handleAlertClose = () => {
+        setAlertOpen(false);
+    }
+
     const handleCheckoutOpen = () => {
         const newProductCards = productCards.filter((card) => card.quantity!=="" || card.quantity===null || card.quantity===0)
         setProductCards(newProductCards)
@@ -43,7 +66,7 @@ function SubmitButton(){
         let check = false
 
         form.quantities.forEach( element => {
-            if(element !== "" || element!==null || element!==0){
+            if(element!=="" && element!==null && element!==0){
                 check = true
             }
         })
@@ -53,7 +76,6 @@ function SubmitButton(){
     const submitForm = async () => {
         const check = checkQuantities()
         if( form.storeName!=="" && check){
-
             const date = new Date().toLocaleString()
 
             //Promise well implemented
@@ -65,6 +87,16 @@ function SubmitButton(){
             handleCheckoutOpen()
         }
         else{
+            if(form.storeName===""){
+                alert("Please select the Store Name")
+                // handleAlertOpen()
+                // alertMessage = "Please enter the Store Name"
+            }
+            else if(check===false){
+                alert("Please fill in the Product Details")
+                // handleAlertOpen()
+                // alertMessage = "Please fill the Product details"
+            }
             // console.log("form = \n" + JSON.stringify(form))
         }
     }
@@ -76,8 +108,28 @@ function SubmitButton(){
             </button>
             
             {/*Checkout box can organised if we define it as another component*/}
-            <Dialog  onClose={handleCheckoutClose} open={open}>
-                <DialogTitle style={{paddingBottom:0}}><b>CheckOut</b></DialogTitle>
+            <Dialog onClose={()=>{}} open={open}>
+                <DialogTitle 
+                    style = {{
+                        paddingBottom: 0,
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-between"
+                    }}
+                >
+                    <b>CheckOut</b>
+                    <Button 
+                        style={{
+                            maxHeight: "200px",
+                            color: "black",
+                            mx: 0,
+                            p: 0,
+                        }}
+                        onClick={handleCheckoutClose}
+                    >
+                        <CloseIcon/>
+                    </Button>
+                </DialogTitle>
                 <div style={dialogStyle}>
                     {  response === true?
                         <>
@@ -94,6 +146,7 @@ function SubmitButton(){
                         <p><b>Status</b> : Updation <b>Loading</b> OR <b>Failed</b></p>
                     }
                 </div>
+                {/* <AlertBox open={alertOpen} onClose={handleAlertClose} message={alertMessage}/> */}
             </Dialog>
         </>
 

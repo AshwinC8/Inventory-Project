@@ -1,25 +1,30 @@
 import { FormControl, TextField, Autocomplete } from "@mui/material"
 import { useContext, useEffect, useState } from 'react';
 import { DataContext } from '../../context/DataProvider';
-import { useSession } from '@supabase/auth-helpers-react'
+import { useSessionContext } from '@supabase/auth-helpers-react'
 import { getStores } from '../../util/GoogleSheetsFunctions';
 import ProductCards from "./ProductCards";
+import HistoryIcon from '@mui/icons-material/History';
+import { useNavigate } from "react-router-dom";
 
 const formStyle = {
-    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    width: "97%",
 }
 
 const storeDropdownStyle = {
-    width : "97%",
-    backgroundColor : "#E5E4E2"
+    width : "80%",
+    backgroundColor : "#E5E4E2",
+    marginRight : 2
 }
 
 
 function AppendForm(){
-    const { storeNames, setStoreNames, setForm} = useContext(DataContext)
-    const session = useSession()
+    const { historyStoreName, setHistoryStoreName, storeNames, setStoreNames, setForm} = useContext(DataContext)
+    const { isLoading, session} = useSessionContext()
     const [ storeName, setStoreName] = useState("")
-
+    const navigate = useNavigate()
 
     useEffect( () => {
         const updateStoreNames = async () => {
@@ -28,7 +33,15 @@ function AppendForm(){
         }
 
         updateStoreNames()        
-    },[])
+    },[session])
+
+    const onHistoryClick = () => {
+        if(historyStoreName === ""){
+            alert("Please Enter the Store Name")
+        }else{
+            navigate("/History")
+        }
+    }
     
     
     const handleStoreChange = (event, newStoreName) => {
@@ -38,21 +51,32 @@ function AppendForm(){
                 ...prevState,
                 storeName : newStoreName,
         }))
+
+        setHistoryStoreName(newStoreName)
     }
 
     return(
-        <FormControl sx={formStyle} >
-            <Autocomplete
-                    disablePortal
-                    id="select-store"
-                    sx={storeDropdownStyle}
-                    inputValue={storeName}
-                    onInputChange={handleStoreChange}
-                    options={storeNames}
-                    renderInput={(params) => <TextField {...params} label="Store Name" />}
-            />
+        <div style={{width:"100%", marginTop: 20}}>
+            <div style={formStyle} >
+                <Autocomplete
+                        disablePortal
+                        id="select-store"
+                        sx={storeDropdownStyle}
+                        inputValue={storeName}
+                        onInputChange={handleStoreChange}
+                        options={storeNames}
+                        renderInput={(params) => <TextField {...params} label="Store Name" />}
+                />
+                <button 
+                    style={{ display:"flex", flexDirection:"row", alignItems: "center", gap: 5,}}
+                    onClick={onHistoryClick}
+                >
+                    History
+                    <HistoryIcon/>
+                </button>
+            </div>
             <ProductCards/>
-        </FormControl>
+        </div>
     )
 }
 

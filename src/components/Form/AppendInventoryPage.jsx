@@ -3,7 +3,7 @@ import AppendForm from './AppendForm';
 import { useContext, useEffect } from 'react';
 import { DataContext } from '../../context/DataProvider';
 import { getProductIDs } from '../../util/GoogleSheetsFunctions';
-import { useSession } from '@supabase/auth-helpers-react';
+import { useSessionContext } from '@supabase/auth-helpers-react';
 import SubmitButton from './SubmitButton';
 
 const containerStyle = {
@@ -15,10 +15,11 @@ const containerStyle = {
 
 function AppendInventoryPage(){
     const {  setProductIDs, setRemainingPIDs, setForm} = useContext(DataContext)
-    const session = useSession()
+    const { isLoading, session } = useSessionContext()
 
     useEffect(() => {
         async function updateProductIDs(){
+            console.log(session)
             const value = await getProductIDs(session)
             setProductIDs(value)
             setRemainingPIDs(value)
@@ -35,11 +36,11 @@ function AppendInventoryPage(){
         }
 
         updateProductIDs()
-    },[])
+    },[session])
 
     return(
         <Container maxWidth="sm">
-            <h2>Update Store</h2>
+            {/* <h2>Update Store</h2> */}
             <Grid style={containerStyle}>
                 <AppendForm />       
                 <SubmitButton/>

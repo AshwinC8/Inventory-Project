@@ -1,5 +1,5 @@
 import { useSupabaseClient } from "@supabase/auth-helpers-react"
-
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const headerStyle = {
     position: "-webkit-sticky", /* Safari */
@@ -26,8 +26,10 @@ function HeaderBar() {
 
     return (
         <div style={headerStyle}>
-            <h2>Dashboard</h2>
-            <button onClick={()=>{signOut()}}> Sign Out </button>
+            <h2>Pure Nature Essentials</h2>
+            <button onClick={()=>{signOut()}}> 
+                <LogoutIcon/> 
+            </button>
         </div>
     )
 }

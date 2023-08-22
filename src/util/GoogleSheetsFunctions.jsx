@@ -89,33 +89,126 @@ export async function getProductInfo(session, productID){
 }
 
 export async function appendInventory(session, dateTime, storeName, productUpdates){
-    const appendInfo = [ dateTime, storeName ]
-
+    //data being sent appendInfo being the whole row we r going to update
+    const appendInfo = [ "", "", dateTime, session.user.email, "", storeName ]
     productUpdates.forEach(element => {
         appendInfo.push(element)        
     })
-
+    
+    const range = "Inventory"
     const body = {
-        "range": "Inventory",
+        "range": range,
         "majorDimension": "ROWS",
-        "values": [appendInfo]
+        "values": [appendInfo],
     }
 
-    const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetID}/values/Inventory:append?includeValuesInResponse=true&valueInputOption=USER_ENTERED`,{
-        method: "POST",
+    var returnVal = true
+
+    try {
+        const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetID}/values/${range}:append?includeValuesInResponse=true&insertDataOption=INSERT_ROWS&valueInputOption=USER_ENTERED`,{
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': 'Bearer ' + session.provider_token 
+            },
+            body: JSON.stringify(body)
+        })
+
+        if( !response.ok ){
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }   
+            
+        const responseData = await response.json()
+
+    } catch(error){
+        console.error(error);
+        returnVal = false
+    }
+
+    return returnVal
+}
+
+export async function getStoreHistory(session, storeName){
+    const fields = 'sheets.data.rowData.values(formattedValue)';
+    const request = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetID}?includeGridData=true&ranges=Inventory!C5%3AC&ranges=Inventory!F5%3AZZ&fields=${fields}`,{
+        method: "GET",
         headers: {
-            'Content-Type': 'application/json',
             'Accept': 'application/json',
             'Authorization': 'Bearer ' + session.provider_token 
-        },
-        body: JSON.stringify(body)
+        }
     })
+    
 
-    //Check later
-    const responseData = await response.json()
-    if(responseData.updates.updatedRows >= 1){
-        return true
+    //error handling can be better :)
+    if( !request.ok ){
+        return null
+    } 
+
+    const data = await request.json()
+    console.log(data)
+
+    const history = data.sheets[ZERO].data
+    let length = history[1].rowData.length
+    
+    //only has storeName and productIds
+    const inventorySchema = history[1]
+    
+    //Checking through each row and if the 
+    let storeHistory = []
+    let check = 0
+    for( let i=length-1 ; i>=0 && check<=4; i--){
+        if( !history[1].rowData[i].values || history[1].rowData[i].values.length < 2){
+            continue
+        }
+
+        const store = history[1].rowData[i].values[0].formattedValue + ""
+
+        if( storeName === store ){
+            check++;
+            
+            //changing date format
+            var date = new Date(history[0].rowData[i].values[ZERO].formattedValue)
+            date = date.toString('YYYY-MM-dd');
+            date = date.substr(0,25)
+
+            let item = {
+                time : date,
+                products : []
+            }
+
+
+            const productPromises = [];
+
+            for(let j=1 ; j < history[1].rowData[i].values.length ; j++ ){
+                if(JSON.stringify(history[1].rowData[i].values[j]) === "{}" ){
+                    continue
+                }
+
+                const productPromise = (async () => {
+                    const pInfo = await getProductInfo(session, inventorySchema.rowData[0].values[j].formattedValue);
+                    return {
+                        productId : inventorySchema.rowData[0].values[j].formattedValue,
+                        productName: pInfo.productName,
+                        quantityReplenished: history[1].rowData[i].values[j].formattedValue,
+                    };
+                  })();
+          
+                  productPromises.push(productPromise);
+
+                // item.products.push(productInfo)
+            } 
+            // Wait for all product promises to resolve
+            const productResults = await Promise.all(productPromises);
+
+            // Push product results to the item's products array
+            item.products.push(...productResults);
+
+            storeHistory.push(item)
+        }
     }
 
-    return false
+    console.log(storeHistory)
+
+    return storeHistory
 }

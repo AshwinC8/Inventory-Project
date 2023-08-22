@@ -7,6 +7,7 @@ const DataProvider = ( {children} ) => {
     const [ productIDs, setProductIDs] = useState([])
     const [ remainingPIDs, setRemainingPIDs ] = useState([])
     const [ productCards, setProductCards ] = useState([])
+    const [ historyStoreName, setHistoryStoreName ] = useState("")
     const [ form, setForm] = useState({
         storeName : "",
         date : "",
@@ -25,6 +26,8 @@ const DataProvider = ( {children} ) => {
             setRemainingPIDs, 
             productCards, 
             setProductCards,
+            historyStoreName, 
+            setHistoryStoreName
         }}>
             { children }
         </DataContext.Provider>

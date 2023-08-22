@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useSession} from '@supabase/auth-helpers-react'
+import { useSessionContext } from '@supabase/auth-helpers-react'
 import AppendInventoryPage from '../components/Form/AppendInventoryPage'
 import HeaderBar from '../components/shared layout/HeaderBar'
 
@@ -12,15 +12,23 @@ const successPageStyle = {
 }
 
 function Success() {
-    const session = useSession()
+    const { isLoading, session, error } = useSessionContext()
     const navigate = useNavigate()
-
+    
     useEffect(()=>{
-      if(!session){
-        navigate("/")
-      }
-      else if(!session.hasOwnProperty("provider_token")){
-        navigate("/")
+      let date = new Date()
+      let unixTimeStamp = Math.floor(date.getTime()/1000)
+      
+      if( isLoading===false){
+          if(!session){
+            navigate("/")
+          }
+          else if( session.expires_at <= unixTimeStamp){
+            navigate("/")
+          }
+          else if(!session.hasOwnProperty("provider_token")){
+            navigate("/")
+          }
       }
     },[session])
 
