@@ -1,5 +1,6 @@
 # Inventory-Project
-Web app that provides a dynamic form that helps employees easily update products replenished at a store.
+- A Web app that provides a dynamic form that helps employees easily update products replenished at a store.
+- This website is a personal project for a startup I know of to help tackle the difficulty of using a static form which is time-consuming for an employee to fill
 
 ## Login Page
 https://github.com/AshwinC8/Inventory-Project/assets/84435023/1e74f9d0-e900-4e35-89f5-d5a2aae164f6
