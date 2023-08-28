@@ -1,4 +1,4 @@
-const spreadsheetID = "1Hdo1_4q5Id9-qafaM4AY8fyN_cxC4PxIlZ9GMFMxPaM"
+const spreadsheetID = "1NPJpLvDdmiMgabFspea7a_DXEC-4GVVoFWB7tgfIpQ4"
 const ZERO = 0
 const IDIndex = 0 
 const ProductNameIndex = 1 
@@ -15,12 +15,12 @@ export const getStores = async (session) => {
     })
 
     const data = await request.json()
-    
+
     const storeList = data.sheets[ZERO].data[ZERO].rowData
     const length = data.sheets[ZERO].data[ZERO].rowData.length
     let storeNames = [""]
     for( let i=1 ; i<length ; i++){
-        const store = storeList[i].values[ZERO].effectiveValue.stringValue+""
+        const store = storeList[i].values[ZERO].formattedValue
         storeNames.push(store)
         // storeNames.push({ label : store, index : i-1})
     }
@@ -68,18 +68,18 @@ export async function getProductInfo(session, productID){
     const  productInfo = {
         productID: "",
         productName: "",
-        quantity: ""
+        // quantity: ""
     }
 
     for( let i=1 ; i<length ; i++){
         const pID = productInfoList[i].values[IDIndex].formattedValue
         if( pID === productID ){
             const productName = productInfoList[i].values[ProductNameIndex].effectiveValue.stringValue
-            const quantity = productInfoList[i].values[QuantityIndex].effectiveValue.numberValue
+            // const quantity = productInfoList[i].values[QuantityIndex].effectiveValue.numberValue
             
             productInfo.productID = pID
             productInfo.productName = productName
-            productInfo.quantity = quantity
+            // productInfo.quantity = quantity
 
             return productInfo
         }
@@ -95,7 +95,7 @@ export async function appendInventory(session, dateTime, storeName, productUpdat
         appendInfo.push(element)        
     })
     
-    const range = "Inventory"
+    const range = "DeliveredItems"
     const body = {
         "range": range,
         "majorDimension": "ROWS",
@@ -131,7 +131,7 @@ export async function appendInventory(session, dateTime, storeName, productUpdat
 
 export async function getStoreHistory(session, storeName){
     const fields = 'sheets.data.rowData.values(formattedValue)';
-    const request = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetID}?includeGridData=true&ranges=Inventory!C5%3AC&ranges=Inventory!F5%3AZZ&fields=${fields}`,{
+    const request = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetID}?includeGridData=true&ranges=DeliveredItems!C5%3AC&ranges=DeliveredItems!F5%3AZZ&fields=${fields}`,{
         method: "GET",
         headers: {
             'Accept': 'application/json',
@@ -157,7 +157,7 @@ export async function getStoreHistory(session, storeName){
     //Checking through each row and if the 
     let storeHistory = []
     let check = 0
-    for( let i=length-1 ; i>=0 && check<=4; i--){
+    for( let i=length-1 ; i>=0 && check<=2; i--){
         if( !history[1].rowData[i].values || history[1].rowData[i].values.length < 2){
             continue
         }
@@ -169,8 +169,9 @@ export async function getStoreHistory(session, storeName){
             
             //changing date format
             var date = new Date(history[0].rowData[i].values[ZERO].formattedValue)
-            date = date.toString('YYYY-MM-dd');
-            date = date.substr(0,25)
+            var date = history[0].rowData[i].values[ZERO].formattedValue
+            // date = date.toString('YYYY-MM-dd');
+            // date = date.substr(0,25)
 
             let item = {
                 time : date,
