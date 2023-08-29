@@ -4,6 +4,7 @@ const IDIndex = 0
 const ProductNameIndex = 1 
 const QuantityIndex = 2
 
+
 export const getStores = async (session) => {
 
     const request = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetID}?includeGridData=true&ranges=Stores`,{
@@ -52,6 +53,45 @@ export async function getProductIDs(session){
     return productIDs
 }
 
+
+export async function getProductInfoHistoryFormat(session, productIDs, quantities){
+    const request = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetID}?includeGridData=true&ranges=Products`,{
+        method: "GET",
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + session.provider_token 
+        }
+    })
+
+    const data = await request.json()
+
+    const productInfoList = data.sheets[ZERO].data[ZERO].rowData
+    const length = data.sheets[ZERO].data[ZERO].rowData.length
+
+    let returnedData = []
+
+    for( let i=1 ; i<length ; i++){
+        const pID = productInfoList[i].values[IDIndex].formattedValue
+        if( productIDs.includes(pID) ){
+            const productName = productInfoList[i].values[ProductNameIndex].formattedValue
+            
+            var productInfo = {
+                productId: pID,
+                productName: productName,
+                quantityReplenished: quantities[productIDs.indexOf(pID)],
+            }
+
+            returnedData.push(productInfo)
+        }
+    }
+
+    if( returnedData.length === 0 )
+        return null
+    else
+        return returnedData
+}
+
+
 export async function getProductInfo(session, productID){
     const request = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetID}?includeGridData=true&ranges=Products`,{
         method: "GET",
@@ -71,6 +111,8 @@ export async function getProductInfo(session, productID){
         // quantity: ""
     }
 
+    let returnedData = []
+
     for( let i=1 ; i<length ; i++){
         const pID = productInfoList[i].values[IDIndex].formattedValue
         if( pID === productID ){
@@ -82,10 +124,22 @@ export async function getProductInfo(session, productID){
             // productInfo.quantity = quantity
 
             return productInfo
+        }else if( productID.includes(pID) ){
+            const productName = productInfoList[i].values[ProductNameIndex].effectiveValue.stringValue
+            // const quantity = productInfoList[i].values[QuantityIndex].effectiveValue.numberValue
+            
+            productInfo.productID = pID
+            productInfo.productName = productName
+
+            returnedData.push(productInfo)
         }
     }
 
-    return null 
+    if( returnedData.length === 0 )
+        return null
+    else {
+        return returnedData
+    }
 }
 
 export async function appendInventory(session, dateTime, storeName, productUpdates){
@@ -146,7 +200,6 @@ export async function getStoreHistory(session, storeName){
     } 
 
     const data = await request.json()
-    console.log(data)
 
     const history = data.sheets[ZERO].data
     let length = history[1].rowData.length
@@ -177,38 +230,26 @@ export async function getStoreHistory(session, storeName){
                 time : date,
                 products : []
             }
-
-
-            const productPromises = [];
-
+            
+            var productList = []
+            var quantities = []
             for(let j=1 ; j < history[1].rowData[i].values.length ; j++ ){
                 if(JSON.stringify(history[1].rowData[i].values[j]) === "{}" ){
                     continue
                 }
 
-                const productPromise = (async () => {
-                    const pInfo = await getProductInfo(session, inventorySchema.rowData[0].values[j].formattedValue);
-                    return {
-                        productId : inventorySchema.rowData[0].values[j].formattedValue,
-                        productName: pInfo.productName,
-                        quantityReplenished: history[1].rowData[i].values[j].formattedValue,
-                    };
-                  })();
-          
-                  productPromises.push(productPromise);
-
-                // item.products.push(productInfo)
-            } 
-            // Wait for all product promises to resolve
-            const productResults = await Promise.all(productPromises);
-
-            // Push product results to the item's products array
-            item.products.push(...productResults);
+                productList.push(inventorySchema.rowData[0].values[j].formattedValue)
+                quantities.push(history[1].rowData[i].values[j].formattedValue)
+            }
+            const products = await getProductInfoHistoryFormat(session, productList, quantities)
+            
+            item.products.push(...products);
 
             storeHistory.push(item)
         }
     }
-
+    
+    
     console.log(storeHistory)
 
     return storeHistory
