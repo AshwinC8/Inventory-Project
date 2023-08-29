@@ -67,7 +67,9 @@ function SubmitButton(){
 
         form.quantities.forEach( element => {
             if(element!=="" && element!==null && element!==0){
-                check = true
+                check=true
+            }else {
+                check=false
             }
         })
         return check

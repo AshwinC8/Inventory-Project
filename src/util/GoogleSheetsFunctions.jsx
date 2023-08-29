@@ -230,7 +230,7 @@ export async function getStoreHistory(session, storeName){
                 time : date,
                 products : []
             }
-            
+
             var productList = []
             var quantities = []
             for(let j=1 ; j < history[1].rowData[i].values.length ; j++ ){
