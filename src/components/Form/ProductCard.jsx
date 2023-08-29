@@ -188,7 +188,7 @@ function ProductCard({ card, index }){
                 >
                     {/* <p>{barcodePrefix}</p> */}
                     <Autocomplete
-                            id="productID-store"
+                            // id="productID-store"
                             sx={productSelectStyle}
                             inputValue={productID}
                             onInputChange={handleProductSelect}

@@ -64,19 +64,21 @@ function SubmitButton(){
 
     function checkQuantities(){
         let check = false
-
-        const quantityFields = document.getElementsByClassName("MuiInputBase-input MuiOutlinedInput-input css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input")
-        console.log(quantityFields)
+        const quantityFields = document.getElementsByClassName("quantity-field")
+        console.log(quantityFields[0].children[1].children[0])
         const length = quantityFields.length
 
+
+
         for(let i=0; i<length ; i++){
-            if(quantityFields[i].value!=="" && quantityFields[i].value!==null && quantityFields[i].value!==0){
+            const value = quantityFields[i].children[1].children[0].value
+            if(value!=="" && value!==null && value!==0){
                 check = true
             }else {
                 check = false
             }
         }
-        
+
         return check
     }
 
