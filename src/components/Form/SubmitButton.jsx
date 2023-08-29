@@ -65,18 +65,24 @@ function SubmitButton(){
     function checkQuantities(){
         let check = false
 
-        form.quantities.forEach( element => {
-            if(element!=="" && element!==null && element!==0){
-                check=true
+        const quantityFields = document.getElementsByClassName("MuiInputBase-input MuiOutlinedInput-input css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input")
+        console.log(quantityFields)
+        const length = quantityFields.length
+
+        for(let i=0; i<length ; i++){
+            if(quantityFields[i].value!=="" && quantityFields[i].value!==null && quantityFields[i].value!==0){
+                check = true
             }else {
-                check=false
+                check = false
             }
-        })
+        }
+        
         return check
     }
 
     const submitForm = async () => {
         const check = checkQuantities()
+
         if( form.storeName!=="" && check){
             const date = new Date().toLocaleString()
 
@@ -84,7 +90,7 @@ function SubmitButton(){
             async function getResponse(){
                 return await appendInventory(session, date, form.storeName, form.quantities)
             }
-            const value = getResponse().then((data) => {setResponse(data)})
+            const value = await getResponse().then((data) => {setResponse(data)})
 
             handleCheckoutOpen()
         }

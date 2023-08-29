@@ -234,7 +234,7 @@ function ProductCard({ card, index }){
                 }
                 {
                     productInfo &&
-                        <TextField id="outlined-number" label="Qty" type="number"
+                        <TextField className="quantity-field" label="Qty" type="number"
                             InputLabelProps={{
                             shrink: true,
                             }}
