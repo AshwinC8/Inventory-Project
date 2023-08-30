@@ -27,7 +27,7 @@ function HeaderBar() {
     return (
         <div style={headerStyle}>
             <h2 style={{color:"white"}} className="navbar-title">Pure Nature Essentials</h2>
-            <button onClick={()=>{signOut()}}> 
+            <button style={{padding:"7px"}} onClick={()=>{signOut()}}> 
                 <LogoutIcon/> 
             </button>
         </div>

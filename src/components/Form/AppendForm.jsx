@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 const formStyle = {
     display: "flex",
     flexDirection: "row",
-    width: "97%",
+    width: "100%",
 }
 
 const storeDropdownStyle = {
@@ -71,7 +71,6 @@ function AppendForm(){
                     style={{ display:"flex", flexDirection:"row", alignItems: "center", gap: 5,}}
                     onClick={onHistoryClick}
                 >
-                    History
                     <HistoryIcon/>
                 </button>
             </div>

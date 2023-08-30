@@ -36,7 +36,8 @@ function HistoryCards(){
     return(
         <div>
             {
-                history? 
+                history?(
+                    history.length?
                     <div className={styles.history_cards} key={"history_card_parent"}>
                         {
                             history.map( (card, index) => (
@@ -44,6 +45,11 @@ function HistoryCards(){
                             ))
                         }
                     </div>
+                    :
+                    <div className={styles.null_card}>
+                        <p>No Recent Replenishment data available</p>
+                    </div>
+                )
                 :
                     <div className={styles.loading_card}>
                         <CircularProgress color="success" /> 
