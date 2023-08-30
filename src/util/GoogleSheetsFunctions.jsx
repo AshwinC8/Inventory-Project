@@ -55,7 +55,7 @@ export async function getProductIDs(session){
 
 
 export async function getProductInfoHistoryFormat(session, productIDs, quantities){
-    const request = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetID}?includeGridData=true&ranges=Products`,{
+    const request = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetID}?includeGridData=true&ranges=Products!A:B`,{
         method: "GET",
         headers: {
             'Accept': 'application/json',
@@ -93,7 +93,7 @@ export async function getProductInfoHistoryFormat(session, productIDs, quantitie
 
 
 export async function getProductInfo(session, productID){
-    const request = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetID}?includeGridData=true&ranges=Products`,{
+    const request = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetID}?includeGridData=true&ranges=Products!A:B`,{
         method: "GET",
         headers: {
             'Accept': 'application/json',

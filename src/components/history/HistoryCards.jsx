@@ -16,7 +16,8 @@ function HistoryCards(){
         async function getHistory(){
             getStoreHistory(session, historyStoreName)
             .then((data) => {
-                setHistory(data)
+                console.log(data)
+                setHistory(data);
             })
         }
 
@@ -39,7 +40,7 @@ function HistoryCards(){
                     <div className={styles.history_cards} key={"history_card_parent"}>
                         {
                             history.map( (card, index) => (
-                                <HistoryCard card={card} key={card.productID}/>
+                                <HistoryCard card={card} key={card.time}/>
                             ))
                         }
                     </div>
