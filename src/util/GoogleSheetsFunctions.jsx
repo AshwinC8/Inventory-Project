@@ -1,4 +1,4 @@
-const spreadsheetID = "1NPJpLvDdmiMgabFspea7a_DXEC-4GVVoFWB7tgfIpQ4"
+const spreadsheetID = import.meta.env.VITE_SHEET_URL
 const ZERO = 0
 const IDIndex = 0 
 const ProductNameIndex = 1 
