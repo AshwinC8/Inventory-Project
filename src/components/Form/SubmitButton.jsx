@@ -34,10 +34,11 @@ const dialogStyle= {
 
 function SubmitButton(){
     const session = useSession()
-    const {form, productCards, setProductCards} = useContext(DataContext)
-    const [open, setOpen] = useState(false)
-    const [response, setResponse] = useState(false)
+    const { form, productCards, setProductCards} = useContext(DataContext)
+    const [ open, setOpen] = useState(false)
+    const [ response, setResponse] = useState(false)
     const [ alertOpen, setAlertOpen] = useState(false)
+    const [ checkoutMessage, setCheckoutMessage] = useState("Updation Loading OR Failed")
     let alertMessage = ""
 
     const handleAlertOpen = () => {
@@ -68,8 +69,6 @@ function SubmitButton(){
         console.log(quantityFields[0].children[1].children[0])
         const length = quantityFields.length
 
-
-
         for(let i=0; i<length ; i++){
             const value = quantityFields[i].children[1].children[0].value
             if(value!=="" && value!==null && value!==0){
@@ -92,7 +91,12 @@ function SubmitButton(){
             async function getResponse(){
                 return await appendInventory(session, date, form.storeName, form.quantities)
             }
-            const value = await getResponse().then((data) => {setResponse(data)})
+            const value = await getResponse().then((data) => {
+                setResponse(data); 
+                if( data === true ){
+                    setCheckoutMessage("Successful Updation")
+                }
+            })
 
             handleCheckoutOpen()
         }
@@ -119,41 +123,42 @@ function SubmitButton(){
             
             {/*Checkout box can organised if we define it as another component*/}
             <Dialog onClose={()=>{}} open={open}>
-                <DialogTitle 
+                <div
                     style = {{
                         paddingBottom: 0,
+                        paddingLeft: "25px",
                         display: "flex",
                         flexDirection: "row",
                         justifyContent: "space-between"
                     }}
                 >
-                    <b>CheckOut</b>
+                    <p style={{marginBottom: "0px",}}><b>Status</b>: {checkoutMessage}</p>
                     <Button 
                         style={{
-                            maxHeight: "200px",
+                            maxHeight: "150px",
+                            maxWidth: "50px",
                             color: "black",
                             mx: 0,
-                            p: 0,
+                            padding: 0,
                         }}
                         onClick={handleCheckoutClose}
                     >
                         <CloseIcon/>
                     </Button>
-                </DialogTitle>
+                </div>
                 <div style={dialogStyle}>
                     {  response === true?
                         <>
-                            <p><b>Status</b> : Successful Updation</p>
-                            <p><b>Store</b> : {form.storeName}</p>
+                            <p><b>Store</b>: {form.storeName}</p>
                             <p><b>Items Replenished</b>:</p>
                             {
                                 productCards.map((card, index) => (
-                                    <p key={card.id}><b>{index+1}</b> : {card.productID} -&gt; {card.productName} -&gt; {card.quantity}</p>     
+                                    <p key={card.id}><b>{index+1}</b>: {card.productID} -&gt; {card.productName} -&gt; {card.quantity}</p>     
                                 ))
                             }
                         </>
                         :
-                        <p><b>Status</b> : Updation <b>Loading</b> OR <b>Failed</b></p>
+                        <></>
                     }
                 </div>
                 {/* <AlertBox open={alertOpen} onClose={handleAlertClose} message={alertMessage}/> */}
