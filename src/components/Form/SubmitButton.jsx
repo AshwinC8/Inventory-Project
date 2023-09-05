@@ -66,7 +66,6 @@ function SubmitButton(){
     function checkQuantities(){
         let check = false
         const quantityFields = document.getElementsByClassName("quantity-field")
-        console.log(quantityFields[0].children[1].children[0])
         const length = quantityFields.length
 
         for(let i=0; i<length ; i++){

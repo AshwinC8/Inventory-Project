@@ -16,7 +16,6 @@ function HistoryCards(){
         async function getHistory(){
             getStoreHistory(session, historyStoreName)
             .then((data) => {
-                console.log(data)
                 setHistory(data);
             })
         }

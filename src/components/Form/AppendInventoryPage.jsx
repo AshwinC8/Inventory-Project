@@ -19,7 +19,7 @@ function AppendInventoryPage(){
 
     useEffect(() => {
         async function updateProductIDs(){
-            console.log(session)
+            // console.log(session)
             const value = await getProductIDs(session)
             setProductIDs(value)
             setRemainingPIDs(value)

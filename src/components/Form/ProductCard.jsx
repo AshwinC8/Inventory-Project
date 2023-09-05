@@ -65,7 +65,7 @@ function ProductCard({ card, index }){
 
     //debugging form updates
     useEffect(() => {
-        console.log(form)
+        // console.log(form)
     }, [form])
 
     //updates the card product name onto the card details(i.e productCards state)
@@ -94,7 +94,7 @@ function ProductCard({ card, index }){
                 selectedProduct = temp
             }
         }
-        console.log(selectedProduct)
+        // console.log(selectedProduct)
 
         //ProductCards
         let index = productCards.findIndex( x => x.id === card.id )
@@ -146,20 +146,22 @@ function ProductCard({ card, index }){
 
 
     const handleQuantityChange = (event) => {
+        var value = parseInt(event.target.value)
+
         let index = productCards.findIndex( x => x.id === card.id )
         if( index !== -1 ){
             let tempCards = productCards.slice()
-            tempCards[index].quantity = event.target.value 
+            tempCards[index].quantity = value
             setProductCards(tempCards)
         } 
 
-        setQuantity(event.target.value)
+        setQuantity(value)
 
         //updating form
         productIDs.forEach( (product) => {
             if(product.formattedValue === productID){
                 let q = form.quantities.filter(() => true);
-                q[product.index] = event.target.value
+                q[product.index] = value
     
                 setForm( prevState => ({ 
                         ...prevState,

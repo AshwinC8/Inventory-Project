@@ -250,7 +250,7 @@ export async function getStoreHistory(session, storeName){
     }
     
     
-    console.log(storeHistory)
+    // console.log(storeHistory)
 
     return storeHistory
 }
