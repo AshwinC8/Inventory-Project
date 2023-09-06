@@ -7,7 +7,7 @@ const QuantityIndex = 2
 
 export const getStores = async (session) => {
 
-    const request = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetID}?includeGridData=true&ranges=Stores`,{
+    const request = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetID}?includeGridData=true&ranges=Stores!A:A`,{
         method: "GET",
         headers: {
             'Accept': 'application/json',
@@ -21,8 +21,11 @@ export const getStores = async (session) => {
     const length = data.sheets[ZERO].data[ZERO].rowData.length
     let storeNames = [""]
     for( let i=1 ; i<length ; i++){
-        const store = storeList[i].values[ZERO].formattedValue
-        storeNames.push(store)
+        const store = storeList[i].values[ZERO].formattedValue;
+        if(store === undefined){
+            continue;
+        }
+        storeNames.push(store);
         // storeNames.push({ label : store, index : i-1})
     }
     
@@ -45,7 +48,12 @@ export async function getProductIDs(session){
     const length = data.sheets[ZERO].data[ZERO].rowData.length
     let productIDs = []
     for( let i=1 ; i<length && productList[i].values[IDIndex].formattedValue ; i++){
-        let productID = productList[i].values[ZERO].formattedValue + ""
+        let productID = productList[i].values[ZERO].formattedValue
+        
+        if(productID === undefined){
+            continue;
+        }
+
         let formattedPID = productID.slice(-4)
         productIDs.push({ index : i-1, value : productID, formattedValue : formattedPID})
     }
@@ -75,6 +83,10 @@ export async function getProductInfoHistoryFormat(session, productIDs, quantitie
         if( productIDs.includes(pID) ){
             const productName = productInfoList[i].values[ProductNameIndex].formattedValue
             
+            if(productName === undefined){
+                continue;
+            }
+
             var productInfo = {
                 productId: pID,
                 productName: productName,
@@ -115,6 +127,11 @@ export async function getProductInfo(session, productID){
 
     for( let i=1 ; i<length ; i++){
         const pID = productInfoList[i].values[IDIndex].formattedValue
+
+        if(pID === undefined){
+            continue;
+        }
+
         if( pID === productID ){
             const productName = productInfoList[i].values[ProductNameIndex].effectiveValue.stringValue
             // const quantity = productInfoList[i].values[QuantityIndex].effectiveValue.numberValue
@@ -215,7 +232,11 @@ export async function getStoreHistory(session, storeName){
             continue
         }
 
-        const store = history[1].rowData[i].values[0].formattedValue + ""
+        const store = history[1].rowData[i].values[0].formattedValue 
+        
+        if( store === undefined){
+            continue;
+        }
 
         if( storeName === store ){
             check++;
