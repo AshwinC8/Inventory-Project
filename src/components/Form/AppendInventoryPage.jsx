@@ -25,19 +25,21 @@ function AppendInventoryPage(){
             setProductIDs(value)
             setRemainingPIDs(value)
 
-            //initialize form
-            let init = [] 
-            for(let i=0 ; i<value.length ; i++){
-                init.push("")
+            if( form.quantities.length == 0){
+                //initialize form
+                let init = [] 
+                for(let i=0 ; i<value.length ; i++){
+                    init.push("")
+                }
+                setForm( prevState => ({ 
+                        ...prevState,
+                        quantities : init,
+                }))
             }
-            setForm( prevState => ({ 
-                    ...prevState,
-                    quantities : init,
-            }))
         }
 
         updateProductIDs()
-    },[])
+    },[session])
 
     return(
         <Container maxWidth="sm">
