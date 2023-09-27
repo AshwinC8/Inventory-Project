@@ -25,16 +25,17 @@ function LatestUpdate(){
 
     return(
         <Container 
+            style={{boxShadow: "none"}}
             maxWidth="sm"
             className={styles.latest_contents}
         >
-            <h2 
+            <h3 
                 style={{
                     marginBottom: 10,
                     marginTop: 5,
                 }} >
                 Recent Update
-            </h2>
+            </h3>
             {
                 latest?
                     <div className={styles.latest_cards} key={"history_card_parent"}>
