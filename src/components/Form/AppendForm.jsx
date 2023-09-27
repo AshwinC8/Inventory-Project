@@ -24,7 +24,7 @@ function AppendForm(){
     const { historyStoreName, setHistoryStoreName, storeNames, setStoreNames, setForm} = useContext(DataContext)
     const { isLoading, session} = useSessionContext()
     const [ storeName, setStoreName] = useState("")
-    const navigate = useNavigate()
+    const navigate = useNavigate({ forceRefresh: true })
 
     useEffect( () => {
         const updateStoreNames = async () => {

@@ -7,7 +7,7 @@ import HistoryContents from '../components/history/HistoryContents'
 
 function History() {
     const { isLoading, session, error } = useSessionContext()
-    const navigate = useNavigate()
+    const navigate = useNavigate({ forceRefresh: true })
 
     useEffect(()=>{
       let date = new Date()

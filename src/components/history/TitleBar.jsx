@@ -8,7 +8,7 @@ import { green } from "@mui/material/colors";
 
 function TitleBar(){
     const { historyStoreName, setHistoryStoreName} = useContext(DataContext)
-    const navigate = useNavigate()
+    const navigate = useNavigate({ forceRefresh: true })
 
     const handleBackClick = () => {
         setHistoryStoreName("")

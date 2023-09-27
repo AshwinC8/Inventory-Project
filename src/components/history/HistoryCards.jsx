@@ -11,7 +11,7 @@ function HistoryCards(){
     const { session } = useSessionContext()
     const { historyStoreName } = useContext(DataContext)
     const [ history, setHistory ] = useState(null)
-    const navigate = useNavigate()
+    const navigate = useNavigate({ forceRefresh: true })
     useEffect(() => {
         async function getHistory(){
             getStoreHistory(session, historyStoreName)

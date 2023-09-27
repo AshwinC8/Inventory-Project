@@ -22,7 +22,7 @@ const logoStyle = {
 
 function Login() {
     const session = useSession()
-    const navigate = useNavigate()
+    const navigate = useNavigate({ forceRefresh: true })
     
     useEffect(()=>{
       if(session){

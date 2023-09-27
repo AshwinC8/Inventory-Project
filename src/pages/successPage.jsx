@@ -13,7 +13,7 @@ const successPageStyle = {
 
 function Success() {
     const { isLoading, session, error } = useSessionContext()
-    const navigate = useNavigate()
+    const navigate = useNavigate({ forceRefresh: true })
     
     useEffect(()=>{
       let date = new Date()

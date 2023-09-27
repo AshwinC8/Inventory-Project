@@ -60,7 +60,7 @@ function SubmitButton(){
 
         // Reloading page may be better as cache gets cleared each time 
         // on the other hand if we reset product card states the transition may be smoother 
-        window.location.reload(false);
+        window.location.reload(true);
     }
 
     function checkQuantities(){
