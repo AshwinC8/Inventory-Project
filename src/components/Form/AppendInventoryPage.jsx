@@ -45,6 +45,9 @@ function AppendInventoryPage(){
             <Grid style={containerStyle}>
                 <AppendForm />       
                 <SubmitButton/>
+                <hr style={{
+                    width:"97%",
+                }}/>
                 <LatestUpdate/>
             </Grid>    
         </Container>

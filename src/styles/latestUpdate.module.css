@@ -4,7 +4,7 @@
     gap: 4px;
     /* align-items: center; */
     justify-content: space-between;
-    margin-top: 20px;
+    margin-top: 8px;
     margin-bottom: 30px;
 }
 
@@ -15,7 +15,7 @@
 }
 
 .latest_card {
-    width: 97%; 
+    width: 100%; 
     padding: 3px 15px;
     padding-bottom: 10px;
     background-color: #E5E4E2;

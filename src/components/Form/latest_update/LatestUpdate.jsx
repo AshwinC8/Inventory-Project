@@ -31,6 +31,7 @@ function LatestUpdate(){
             <h2 
                 style={{
                     marginBottom: 10,
+                    marginTop: 5,
                 }} >
                 Recent Update
             </h2>
