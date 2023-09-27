@@ -1,0 +1,70 @@
+.latest_contents {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    /* align-items: center; */
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.title_bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.latest_card {
+    width: 97%; 
+    padding: 3px 15px;
+    padding-bottom: 10px;
+    background-color: #E5E4E2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* align-items: center; */
+    box-sizing: border-box;
+}
+
+.latest_cards {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.back_button {
+    max-height: 200px;
+    color: black;
+    margin: 0px;
+    padding: 0px;
+    color: green;
+}
+
+.loading_card {
+    width: 97%; 
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+}
+
+.null_card {
+    width: 97%; 
+    height: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+}
+
+.card_title {
+    width: 100%;
+    margin-top: 10px;
+    background-color: rgb(176, 216, 176);
+    /* border-radius: ; */
+}

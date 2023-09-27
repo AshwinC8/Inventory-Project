@@ -275,3 +275,56 @@ export async function getStoreHistory(session, storeName){
 
     return storeHistory
 }
+
+
+export async function getLatestUpdate(session){
+    const fields = 'sheets.data.rowData.values(formattedValue)';
+    const request = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetID}?includeGridData=true&ranges=DeliveredItems!C5%3AC&ranges=DeliveredItems!F5%3AZZ&fields=${fields}`,{
+        method: "GET",
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + session.provider_token 
+        }
+    })
+
+    //error handling can be better :)
+    if( !request.ok ){
+        return null
+    } 
+
+    const data = await request.json();
+
+    const history = data.sheets[ZERO].data
+    let length = history[1].rowData.length
+
+    //only has storeName and productIds
+    const inventorySchema = history[1]
+
+    
+    var timestamp = history[0].rowData[length-1].values[0].formattedValue;
+    var storeName = history[1].rowData[length-1].values[0].formattedValue;
+
+    var productList = []
+    var quantities = []
+    var i = length-1
+    for(let j=1 ; j < history[1].rowData[i].values.length ; j++ ){
+        if(JSON.stringify(history[1].rowData[i].values[j]) === "{}" ){
+            continue
+        }
+
+        productList.push(inventorySchema.rowData[0].values[j].formattedValue)
+        quantities.push(history[1].rowData[i].values[j].formattedValue)
+    }
+    const products = await getProductInfoHistoryFormat(session, productList, quantities)
+
+
+    const latest = {
+        timestamp: timestamp,
+        storeName: storeName,
+        products: products,
+    };
+
+    console.log(latest)
+
+    return latest;
+}

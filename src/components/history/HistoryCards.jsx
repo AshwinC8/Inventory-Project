@@ -1,6 +1,6 @@
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useContext, useEffect, useState } from "react";
-import { getStoreHistory } from '../../util/GoogleSheetsFunctions'
+import { getStoreHistory } from '../../util/GoogleSheetsFunctions';
 import { DataContext } from "../../context/DataProvider";
 import { CircularProgress, colors } from "@mui/material";
 import styles from "../../styles/history.module.css"
@@ -12,6 +12,7 @@ function HistoryCards(){
     const { historyStoreName } = useContext(DataContext)
     const [ history, setHistory ] = useState(null)
     const navigate = useNavigate({ forceRefresh: true })
+
     useEffect(() => {
         async function getHistory(){
             getStoreHistory(session, historyStoreName)

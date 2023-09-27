@@ -5,6 +5,7 @@ import { DataContext } from '../../context/DataProvider';
 import { getProductIDs } from '../../util/GoogleSheetsFunctions';
 import { useSessionContext } from '@supabase/auth-helpers-react';
 import SubmitButton from './SubmitButton';
+import LatestUpdate from './latest_update/LatestUpdate';
 
 const containerStyle = {
     display: "flex",
@@ -44,6 +45,7 @@ function AppendInventoryPage(){
             <Grid style={containerStyle}>
                 <AppendForm />       
                 <SubmitButton/>
+                <LatestUpdate/>
             </Grid>    
         </Container>
     )

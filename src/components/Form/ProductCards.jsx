@@ -45,4 +45,4 @@ function ProductCards(){
     )
 }
 
-export default ProductCards
+export default ProductCards;
