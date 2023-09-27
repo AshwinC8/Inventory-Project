@@ -277,7 +277,7 @@ export async function getStoreHistory(session, storeName){
 }
 
 
-export async function getLatestUpdate(session){
+export async function getLatestUpdate(session, index){
     const fields = 'sheets.data.rowData.values(formattedValue)';
     const request = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetID}?includeGridData=true&ranges=DeliveredItems!C5%3AC&ranges=DeliveredItems!F5%3AZZ&fields=${fields}`,{
         method: "GET",
@@ -297,19 +297,23 @@ export async function getLatestUpdate(session){
     const history = data.sheets[ZERO].data
     let length = history[1].rowData.length
 
+    if( length-index<0 ){
+        return null;
+    }
+    
     //only has storeName and productIds
     const inventorySchema = history[1]
 
     
-    var timestamp = history[0].rowData[length-1].values[0].formattedValue;
-    var storeName = history[1].rowData[length-1].values[0].formattedValue;
+    var timestamp = history[0].rowData[length-index].values[0].formattedValue;
+    var storeName = history[1].rowData[length-index].values[0].formattedValue;
 
     var productList = []
     var quantities = []
-    var i = length-1
+    var i = length-index
     for(let j=1 ; j < history[1].rowData[i].values.length ; j++ ){
         if(JSON.stringify(history[1].rowData[i].values[j]) === "{}" ){
-            continue
+            continue;
         }
 
         productList.push(inventorySchema.rowData[0].values[j].formattedValue)
@@ -324,7 +328,7 @@ export async function getLatestUpdate(session){
         products: products,
     };
 
-    console.log(latest)
+    console.log(latest);
 
     return latest;
 }

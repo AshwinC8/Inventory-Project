@@ -1,7 +1,7 @@
 .latest_contents {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 1px;
     /* align-items: center; */
     justify-content: space-between;
     margin-top: 8px;
