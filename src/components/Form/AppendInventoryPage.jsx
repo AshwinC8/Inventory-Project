@@ -15,7 +15,7 @@ const containerStyle = {
 }
 
 function AppendInventoryPage(){
-    const {  setProductIDs, setRemainingPIDs, setForm} = useContext(DataContext)
+    const { setProductIDs, setRemainingPIDs, setForm} = useContext(DataContext)
     const { isLoading, session } = useSessionContext()
 
     useEffect(() => {
@@ -25,7 +25,7 @@ function AppendInventoryPage(){
             setProductIDs(value)
             setRemainingPIDs(value)
 
-            if( form.quantities.length == 0){
+            if( form.quantities.length === 0){
                 //initialize form
                 let init = [] 
                 for(let i=0 ; i<value.length ; i++){
