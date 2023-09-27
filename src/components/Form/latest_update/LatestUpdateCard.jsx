@@ -7,10 +7,10 @@ function LatestUpdateCard({card}) {
     return (
         <Card className={styles.latest_card}>
             <div className={styles.card_title}>
-                <h3 style={{textAlign: "center", marginTop: 3, marginBottom: 3 }}>{card.storeName}</h3>
+                <h4 style={{textAlign: "center", marginTop: 3, marginBottom: 3 }}>{card.storeName}</h4>
             </div>
             <div className={styles.card_title}>
-                <h3 style={{textAlign: "center", marginTop: 3, marginBottom: 3 }}>{card.timestamp}</h3>
+                <h4 style={{textAlign: "center", marginTop: 3, marginBottom: 3 }}>{card.timestamp}</h4>
             </div>
             {
                 card.products.map((product, index) => (
