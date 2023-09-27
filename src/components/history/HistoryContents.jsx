@@ -14,7 +14,7 @@ function HistoryContents(){
             className={styles.history_contents}
         >
             <TitleBar/>
-            <h2>{historyStoreName}</h2>
+            <h3>{historyStoreName}</h3>
             <HistoryCards/>
         </Container>
     )

@@ -26,7 +26,7 @@ function TitleBar(){
             >
                 <ArrowBackIcon/>
             </Button>
-            <h2> Previous Replenishments</h2>
+            <h3> Previous Replenishments</h3>
         </div>
     )
 }
