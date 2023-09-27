@@ -9,7 +9,7 @@ const submitButtonStyle = {
     width: "50%",
     maxWidth: "300px",
     height: "50px",
-    marginTop: 60,
+    marginTop: 30,
     marginBottom: 20,
 }
 
