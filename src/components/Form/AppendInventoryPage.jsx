@@ -36,7 +36,7 @@ function AppendInventoryPage(){
         }
 
         updateProductIDs()
-    },[session])
+    },[])
 
     return(
         <Container maxWidth="sm">
