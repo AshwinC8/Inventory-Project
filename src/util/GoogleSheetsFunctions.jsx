@@ -300,7 +300,7 @@ export async function getLatestUpdate(session, index){
     if( length-index<0 ){
         return null;
     }
-    
+
     //only has storeName and productIds
     const inventorySchema = history[1]
 
@@ -328,7 +328,7 @@ export async function getLatestUpdate(session, index){
         products: products,
     };
 
-    console.log(latest);
+    // console.log(latest);
 
     return latest;
 }
