@@ -227,7 +227,7 @@ export async function getStoreHistory(session, storeName){
     //Checking through each row and if the 
     let storeHistory = []
     let check = 0
-    for( let i=length-1 ; i>=0 && check<=2; i--){
+    for( let i=length-1 ; i>=0 && check<=4; i--){
         if( !history[1].rowData[i].values || history[1].rowData[i].values.length < 2){
             continue
         }
