@@ -29,13 +29,13 @@ function LatestUpdate(){
             maxWidth="sm"
             className={styles.latest_contents}
         >
-            <h3 
+            <p 
                 style={{
                     marginBottom: 10,
                     marginTop: 5,
                 }} >
                 Recent Update
-            </h3>
+            </p>
             {
                 latest?
                     <div className={styles.latest_cards} key={"history_card_parent"}>

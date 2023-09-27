@@ -21,7 +21,7 @@ function LatestUpdateCard({card}) {
                             backgroundColor: backgroundColors[index%2],
                         }}
                     > 
-                        <p>{product.productId.slice(9,)} -&gt; {product.productName} -&gt; <b>{product.quantityReplenished}</b></p>
+                        <p style={{fontSize:"small"}}>{product.productId.slice(9,)} -&gt; {product.productName} -&gt; <b>{product.quantityReplenished}</b></p>
                     </div>
                 ))
             }
