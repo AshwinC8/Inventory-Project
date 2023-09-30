@@ -42,7 +42,7 @@ function AppendForm(){
             navigate("/History")
         }
     }
-    
+
     
     const handleStoreChange = (event, newStoreName) => {
         setStoreName(newStoreName)

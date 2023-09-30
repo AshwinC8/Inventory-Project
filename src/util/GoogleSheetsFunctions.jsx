@@ -58,7 +58,7 @@ export async function getProductIDs(session){
         productIDs.push({ index : i-1, value : productID, formattedValue : formattedPID})
     }
 
-    return productIDs
+    return productIDs;
 }
 
 

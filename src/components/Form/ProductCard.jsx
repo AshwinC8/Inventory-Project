@@ -63,10 +63,6 @@ function ProductCard({ card, index }){
         setQuantity(card.quantity)
     }, [])
 
-    //debugging form updates
-    useEffect(() => {
-        // console.log(form)
-    }, [form])
 
     //updates the card product name onto the card details(i.e productCards state)
     useEffect(() => {
@@ -84,6 +80,19 @@ function ProductCard({ card, index }){
     function removeCard(){
         const updatedCards = productCards.filter(element => element.id !== card.id)
         setProductCards(updatedCards)
+
+        //updating form
+        productIDs.forEach( (product) => {
+            if(product.formattedValue === productID){
+                let q = form.quantities.filter(() => true);
+                q[product.index] = "";
+    
+                setForm( prevState => ({ 
+                        ...prevState,
+                        quantities: q
+                }))
+            }
+        })
     }
 
     const handleProductSelect = (event, newInputValue) => {
@@ -196,6 +205,7 @@ function ProductCard({ card, index }){
                             onInputChange={handleProductSelect}
                             options={productIDs}
                             getOptionLabel={(option) => option.formattedValue}
+                            isOptionEqualToValue={(option, value) => option.formattedValue === value.formattedValue}
                             renderInput={(params) => <TextField {...params} label="Last 4 digits" />}
                     />
                 </div>

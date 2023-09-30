@@ -6,6 +6,8 @@ import { getProductIDs } from '../../util/GoogleSheetsFunctions';
 import { useSessionContext } from '@supabase/auth-helpers-react';
 import SubmitButton from './SubmitButton';
 import LatestUpdate from './latest_update/LatestUpdate';
+import { GoTrueAdminApi } from '@supabase/supabase-js';
+import ProductCards from './ProductCards';
 
 const containerStyle = {
     display: "flex",
@@ -15,31 +17,42 @@ const containerStyle = {
 }
 
 function AppendInventoryPage(){
-    const { setProductIDs, setRemainingPIDs, setForm} = useContext(DataContext)
+    const { productCards, setProductIDs, setRemainingPIDs, form, setForm} = useContext(DataContext)
     const { isLoading, session } = useSessionContext()
 
     useEffect(() => {
         async function updateProductIDs(){
             // console.log(session)
-            const value = await getProductIDs(session)
-            setProductIDs(value)
-            setRemainingPIDs(value)
+            const values = await getProductIDs(session)
+            setProductIDs(values)
+            setRemainingPIDs(values)
 
-            if( form.quantities.length === 0){
-                //initialize form
-                let init = [] 
-                for(let i=0 ; i<value.length ; i++){
-                    init.push("")
-                }
-                setForm( prevState => ({ 
-                        ...prevState,
-                        quantities : init,
-                }))
+            
+            //initialize form
+            let init = [] 
+            for(let i=0 ; i<values.length ; i++){
+                init.push(productInProductCards(values[i].formattedValue));
             }
+            setForm( prevState => ({ 
+                    ...prevState,
+                    quantities : init,
+            }))
         }
 
-        updateProductIDs()
-    },[session])
+        function productInProductCards(productID){
+            var result = "";
+
+            productCards.forEach(element => {
+                if( element.productID === productID ){
+                    result = element.quantity;
+                }
+            });
+
+            return result;
+        }
+
+        updateProductIDs();
+    },[session]);
 
     return(
         <Container maxWidth="sm">

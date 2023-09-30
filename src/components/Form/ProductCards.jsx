@@ -13,10 +13,6 @@ const addButtonStyle = {
     marginTop: 15
 }
 
-const productCardFormat = {
-    
-}
-
 
 function ProductCards(){
     const { productCards, setProductCards} = useContext(DataContext)
